@@ -59,6 +59,10 @@ target/
 # DotEnv configuration
 .env
 
+# env evironment
+env/
+env_prueba/
+
 # Database
 *.db
 *.rdb
@@ -89,4 +93,7 @@ target/
 .mypy_cache/
 
 # data config
-src/data/config.py
+notebooks/config.py
+
+# BETO MODEL (BERT based)
+pytorch/
