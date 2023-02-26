@@ -154,7 +154,7 @@ class Features:
             output.append(vector_normalized)
         return output
 
-    def max_min_normalization(list, new_min=0.0, new_max=1.0):
+    def min_max_normalization(list, new_min=0.0, new_max=1.0):
         output = []
         for vector in list:
             div = ((vector - vector.min()) / (vector.max() - vector.min()))
