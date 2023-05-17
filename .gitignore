@@ -60,7 +60,7 @@ target/
 .env
 
 # env evironment
-env/
+env_tt/
 env_prueba/
 
 # Database
