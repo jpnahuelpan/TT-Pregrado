@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from nltk.corpus import stopwords
 
@@ -7,11 +6,27 @@ from nltk.corpus import stopwords
 class Summarize:
     """Clase que contiene los metodos para resumir los grupos o cluster
         de microtextos."""
-    def TCRE(corpus, cluster_result, min_word_freq):
+    import numpy as np
+
+    def LSA_summary(A, K):
+        # Compute the SVD of the matrix A
+        U, s, VT = np.linalg.svd(A, full_matrices=False)
+        # Create the diagonal matrix Sigma
+        Sigma = np.diag(s)
+        V = VT.T
+        # Compute the sentence scores
+        sentence_scores = np.linalg.norm(V @ Sigma, axis=1)
+
+        # Get the indices of the sentences with the highest K scores
+        summary_indices = np.argsort(sentence_scores)[::-1][:K]
+
+        return summary_indices
+
+    def TCRE(corpus, cluster_result, vectorizer):
         # Step 1: Set variables
         n = len(corpus)
         feat_list = []
-        vectorizer = CountVectorizer()
+        # vectorizer = CountVectorizer()
         vectorizer.fit(corpus)
         # Step 2: Map text to 0-1 bag-of-words features
         for i in range(n):
@@ -21,8 +36,8 @@ class Summarize:
             # Step 6: Filter out stop words and low-frequency words
             stop_words = stopwords.words('spanish')
             tokens = [token for token in tokens if token not in stop_words]
-            word_counts = {word:tokens.count(word) for word in set(tokens)}
-            word_counts = [k for k,v in word_counts.items() if v >= min_word_freq]
+            word_counts = {word: tokens.count(word) for word in set(tokens)}
+            word_counts = [k for k, v in word_counts.items() if v >= 2]
 
             # Step 7: Map tokens into 0-1 feature vector feat
             feat = np.zeros(len(vectorizer.vocabulary_))

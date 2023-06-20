@@ -11,7 +11,8 @@ class Features:
     """
     Contiene los metodos necesario para preparar los datos,
     tanto limpieza, clasificación, codificador a bert entradas,
-    tranformacion a representación de texto Bert.
+    tranformacion a representación de texto Bert, cálculo de optimo
+    de grupos.
     """
     def clean_texts(input_path, output_path):
         df = pd.read_csv(f"{input_path}")
@@ -144,14 +145,14 @@ class Features:
         for vector in list:
             norm1_of_vector = vector.__abs__().sum()
             vector_normalized = vector / norm1_of_vector
-            output.append(vector_normalized)
+            output.append(vector_normalized.tolist())
         return output
 
     def z_score_normalization(list):
         output = []
         for vector in list:
             vector_normalized = (vector - vector.mean()) / vector.std()
-            output.append(vector_normalized)
+            output.append(vector_normalized.tolist())
         return output
 
     def min_max_normalization(list, new_min=0.0, new_max=1.0):
@@ -159,5 +160,39 @@ class Features:
         for vector in list:
             div = ((vector - vector.min()) / (vector.max() - vector.min()))
             vector_normalized = (div * (new_max - new_min)) + new_min
-            output.append(vector_normalized)
+            output.append(vector_normalized.tolist())
         return output
+
+    def decimal_scaling_normalization(vector):
+        i = 0
+        while True:
+            vector_normalized = vector / (10**i)
+            i += 1
+            if vector_normalized.max() < 1.0:
+                break
+        return vector_normalized
+
+    def cluster_variance(X, cluster_labels, centers, k):
+        puntos = X[cluster_labels == k]
+        c = centers[k]
+        distancias = [np.linalg.norm(c - i) for i in puntos]
+        N = len(puntos)
+        mean = sum(distancias)/N
+        variance = sum([(i-mean)**2 for i in distancias]) / (N - 1)
+        return variance
+
+    def optimo_k(silhouettes, VP):
+        silhouettes = silhouettes.copy()
+        VP = VP.copy()
+        index_max_Si = silhouettes.index(max(silhouettes))
+        distancia = silhouettes[index_max_Si] - VP[index_max_Si]
+        for _ in silhouettes:
+            index_aux = silhouettes.index(max(silhouettes))
+            distancia_aux = silhouettes[index_aux] - VP[index_aux]
+            silhouettes[index_aux] = 0
+            VP[index_aux] = 0
+            if distancia < distancia_aux:
+                # print(distancia, distancia_aux)
+                distancia = distancia_aux
+                index_max_Si = index_aux
+        return index_max_Si
