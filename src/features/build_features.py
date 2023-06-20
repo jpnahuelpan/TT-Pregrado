@@ -145,23 +145,23 @@ class Features:
         for vector in list:
             norm1_of_vector = vector.__abs__().sum()
             vector_normalized = vector / norm1_of_vector
-            output.append(vector_normalized.tolist())
-        return output
+            output.append(vector_normalized)
+        return np.array(output)
 
     def z_score_normalization(list):
         output = []
         for vector in list:
             vector_normalized = (vector - vector.mean()) / vector.std()
-            output.append(vector_normalized.tolist())
-        return output
+            output.append(vector_normalized)
+        return np.array(output)
 
     def min_max_normalization(list, new_min=0.0, new_max=1.0):
         output = []
         for vector in list:
             div = ((vector - vector.min()) / (vector.max() - vector.min()))
             vector_normalized = (div * (new_max - new_min)) + new_min
-            output.append(vector_normalized.tolist())
-        return output
+            output.append(vector_normalized)
+        return np.array(output)
 
     def decimal_scaling_normalization(vector):
         i = 0
