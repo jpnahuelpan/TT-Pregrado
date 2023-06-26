@@ -178,21 +178,14 @@ class Features:
         distancias = [np.linalg.norm(c - i) for i in puntos]
         N = len(puntos)
         mean = sum(distancias)/N
-        variance = sum([(i-mean)**2 for i in distancias]) / (N - 1)
+        if N == 1:
+            # para penalizar a los grupos con un solo punto.
+            variance = distancias[0]
+        else:
+            variance = sum([(i-mean)**2 for i in distancias]) / (N - 1)
         return variance
 
     def optimo_k(silhouettes, VP):
-        silhouettes = silhouettes.copy()
-        VP = VP.copy()
-        index_max_Si = silhouettes.index(max(silhouettes))
-        distancia = silhouettes[index_max_Si] - VP[index_max_Si]
-        for _ in silhouettes:
-            index_aux = silhouettes.index(max(silhouettes))
-            distancia_aux = silhouettes[index_aux] - VP[index_aux]
-            silhouettes[index_aux] = 0
-            VP[index_aux] = 0
-            if distancia < distancia_aux:
-                # print(distancia, distancia_aux)
-                distancia = distancia_aux
-                index_max_Si = index_aux
-        return index_max_Si
+        distance = np.array(silhouettes) - np.array(VP)
+        index = np.argmax(distance)
+        return index
