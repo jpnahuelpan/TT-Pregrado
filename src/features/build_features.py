@@ -166,11 +166,12 @@ class Features:
     def decimal_scaling_normalization(vector):
         i = 0
         while True:
-            vector_normalized = vector / (10**i)
+            p = 10**i
+            vector_normalized = vector / p
             i += 1
-            if vector_normalized.max() < 1.0:
+            if vector_normalized.max() <= 1.0:
                 break
-        return vector_normalized
+        return vector_normalized, p
 
     def cluster_variance(X, cluster_labels, centers, k):
         puntos = X[cluster_labels == k]
