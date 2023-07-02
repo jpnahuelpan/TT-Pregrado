@@ -23,6 +23,51 @@ class Summarize:
 
         return summary_indices
 
+    def LSA_evaluation_main_topic(A, S):
+        # Calcular SVD de la matriz A y S
+        Ua, sa, VTa = np.linalg.svd(
+            A, full_matrices=False)
+        Us, ss, VTs = np.linalg.svd(
+            S, full_matrices=False)
+
+        # Seleccionando el vector columna de
+        # Ua (texto original) Us (Texto del resumen)
+        Ue = Us[:, 0] 
+        Uf = Ua[:, 0]
+
+        # Se calcula la puntuación del resumen
+        score = Ue @ Uf
+
+        return score
+
+    def LSA_evaluation_term_significance(A, S):
+        # Calcular SVD de la matriz A y S
+        Ua, sa, VTa = np.linalg.svd(
+            A, full_matrices=False)
+        Us, ss, VTs = np.linalg.svd(
+            S, full_matrices=False)
+        Sigma_a = np.diag(sa)
+        Sigma_s = np.diag(ss)
+
+        # Se multiplica las matrices
+        # Ua (texto original) Us (texto del reesumen)
+        # por Sigma de cada calculo de SVD
+        UaS = Ua @ Sigma_a
+        UsS = Us @ Sigma_s
+
+        # Cálculo de vectores de termino
+        Ue = np.linalg.norm(UsS, axis=1)
+        Uf = np.linalg.norm(UaS, axis=1)
+
+        # Normalización de vectores
+        Ue = Ue / np.linalg.norm(Ue)
+        Uf = Uf / np.linalg.norm(Uf)
+
+        # Se calcula la puntuación del resumen
+        score = Ue @ Uf
+
+        return score
+
     def log_regresion_weights(self, X, y):
         # para garantizar la reproducibilidad de los resultados.
         np.random.seed(5)
