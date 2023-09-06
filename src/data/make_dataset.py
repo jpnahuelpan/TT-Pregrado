@@ -6,8 +6,8 @@ from datetime import date
 
 class Data:
     """
-        Contiene todos los metodos necesarios para recolectar datos
-        desde twitter a traves la API twitter usando la libreria Tweepy.
+        Contiene todos los métodos necesarios para recolectar datos
+        desde twitter a traves la API twitter usando la librería Tweepy.
     """
     def __init__(self, api):
         self.api = api

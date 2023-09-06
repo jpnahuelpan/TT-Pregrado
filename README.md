@@ -3,6 +3,41 @@ TT-Pregrado
 
 Código del trabajo de título.
 
+
+
+
+Instalación de requerimientos:
+
+```shell
+$ cd project_folder
+$ virtualenv env
+$ source env/bin/activate
+$ pip install install -r requirements.txt
+```
+
+Credenciales de Twitter API:
+
+```shell
+$ cd project_folder
+$ cd notebooks
+$ touch config.py
+```
+Luego agregar credenciales al archivo config.py
+
+```python
+API_KEY = "API Key"
+API_SECRET = "API Key Secret"
+ACCESS_TOKEN = "Access Token"
+ACCESS_TOKEN_SECRET = "Access Token Secret"
+```
+Por ultimo para instalar el paquete interno (src) debe ejecutar el siguiente comando:
+
+```shell
+$ source env/bin/activate (en caso que no tenga el invironment activado)
+$ python3 setup.py install --prefix /home/..../project_folder/env
+```
+
+
 Project Organization
 ------------
 
@@ -42,8 +77,6 @@ Project Organization
         │
         └── visualization  <- Scripts to create exploratory and results oriented visualizations
             └── visualize.py
-
-
 
 --------
 

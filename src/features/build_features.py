@@ -9,11 +9,24 @@ from transformers import pipeline
 
 class Features:
     """
-    Contiene los metodos necesario para preparar los datos,
+    Contiene los métodos necesario para preparar los datos,
     tanto limpieza, clasificación, codificador a bert entradas,
-    tranformacion a representación de texto Bert, cálculo de optimo
+    transformación a representación de texto Bert, cálculo de optimo
     de grupos.
     """
+    def delete_stopwords(sentences, word_tokenize, stop_words):
+        filtered_sentences = []
+        for sentence in sentences:
+            # Tokenizar la oración en palabras
+            words = word_tokenize(sentence)
+            # Filtrar las palabras que no son stop words
+            filtered_words = [word for word in words if word.lower() not in stop_words]
+            # Unir las palabras filtradas para formar la oración procesada
+            filtered_sentence = ' '.join(filtered_words)
+            # Agregar la oración procesada a la lista de oraciones filtradas
+            filtered_sentences.append(filtered_sentence)
+        return filtered_sentences
+
     def clean_texts(input_path, output_path):
         df = pd.read_csv(f"{input_path}")
         df.drop_duplicates(subset=['tweet_text'], inplace=True)
@@ -50,7 +63,7 @@ class Features:
         df["hashtags_in_tweet"] = dic["hashtags"]
         df.to_csv(f"{output_path}", index=False)
 
-    def sentiment_clasificator(input_path, output_path):
+    def sentiment_classification(input_path, output_path):
         df = pd.read_csv(f"{input_path}")
         df.drop_duplicates(subset=['tweet_text'], inplace=True)
         model_path = "daveni/twitter-xlm-roberta-emotion-es"
